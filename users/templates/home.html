@@ -1,0 +1,63 @@
+<!-- home.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>World Population Data</title>
+</head>
+<body>
+    <h1>World Population Data</h1>
+    <form method="get" action="{% url 'home' %}">
+        {{ form.as_p }}
+        <button type="submit">Search</button>
+
+    </form>
+    <form id="logout-form" action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+
+    <!-- Table -->
+    <table border="1">
+        <tr>
+            <th>Country</th>
+            <th>Population 1980</th>
+            <!-- Add other headers as needed -->
+        </tr>
+        {% for country in data %}
+            <tr>
+                <td>{{ country.country }}</td>
+                <td>{{ country.pop1980 }}</td>
+                <!-- Add other data fields as needed -->
+            </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Bar Graph (using Chart.js for simplicity) -->
+    <canvas id="barChart" width="400" height="200"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById('barChart').getContext('2d');
+        var barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [{% for country in data %}"{{ country.country }}",{% endfor %}],
+                datasets: [{
+                    label: 'Population 1980',
+                    data: [{% for country in data %}{{ country.pop1980 }},{% endfor %}],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+    
+
+</body>
+</html>

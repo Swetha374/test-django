@@ -1,0 +1,17 @@
+version: '3'
+services :
+  app:
+    container_name: video_lib
+    build: .
+    restart: unless-stopped
+    volumes:
+     - ./:/user_management
+    command: sh -cx "python manage.py makemigrations &&
+        python manage.py migrate &&
+        python manage.py collectstatic --noinput &&
+        python manage.py runserver  0.0.0.0:8000"
+    env_file:
+      - .env 
+    # DONOT CHNAGE PORT NUMBER
+    ports:
+      - "127.0.0.1:8000:8000" 
